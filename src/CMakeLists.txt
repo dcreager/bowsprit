@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------
-# Copyright © 2011, RedJack, LLC.
+# Copyright © 2011-2014, RedJack, LLC.
 # All rights reserved.
 #
-# Please see the LICENSE.txt file in this distribution for license
-# details.
+# Please see the COPYING file in this distribution for license details.
 # ----------------------------------------------------------------------
 
-include_directories(../include)
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
 #-----------------------------------------------------------------------
 # Build the library
 
-set(LIBAPPNAME_SRC
-    libappname/foo.c
+set(LIBBOWSPRIT_SRC
+    libbowsprit/foo.c
 )
 
 # Update the VERSION and SOVERSION properties below according to the following
@@ -34,7 +33,7 @@ set(LIBAPPNAME_SRC
 #   6. If any interfaces have been removed or changed since the last public
 #      release, then set `age` to 0.
 #
-# SOVERSION should always equal `current`.
+# SOVERSION should always equal `current-age`.
 #
 # Note that changing `current` means that you are releasing a new
 # backwards-incompatible version of the library.  This has implications on
@@ -42,21 +41,21 @@ set(LIBAPPNAME_SRC
 #
 # [1] http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html#Updating-version-info
 
-add_library(libappname SHARED ${LIBAPPNAME_SRC})
-set_target_properties(libappname PROPERTIES
-    OUTPUT_NAME appname
+add_library(libbowsprit SHARED ${LIBBOWSPRIT_SRC})
+set_target_properties(libbowsprit PROPERTIES
+    OUTPUT_NAME bowsprit
     VERSION 0.0.0
     SOVERSION 0)
-target_link_libraries(libappname
+target_link_libraries(libbowsprit
     ${CORK_LIBRARIES}
 )
 
-install(TARGETS libappname DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS libbowsprit DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 #-----------------------------------------------------------------------
 # Generate the pkg-config file
 
 set(prefix ${CMAKE_INSTALL_PREFIX})
-configure_file(appname.pc.in ${CMAKE_CURRENT_BINARY_DIR}/appname.pc @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/appname.pc
+configure_file(bowsprit.pc.in ${CMAKE_CURRENT_BINARY_DIR}/bowsprit.pc @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/bowsprit.pc
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)

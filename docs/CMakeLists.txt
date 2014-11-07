@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------
-# Copyright © 2011-2013, RedJack, LLC.
+# Copyright © 2011-2014, RedJack, LLC.
 # All rights reserved.
 #
-# Please see the LICENSE.txt file in this distribution for license
-# details.
+# Please see the COPYING file in this distribution for license details.
 # ----------------------------------------------------------------------
 
 # Fill in this with the text that you want to include in the header and footer
 # of each man page.
 
-set(MAN_HEADER "APPNAME documentation")
-set(MAN_FOOTER "APPNAME")
+set(MAN_HEADER "Bowsprit documentation")
+set(MAN_FOOTER "bowsprit")
 
 # Fill this in with any man pages that should be built from a pandoc source
 # file.  For a man page called foo.5, there should be a pandoc source file

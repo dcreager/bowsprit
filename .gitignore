@@ -2,10 +2,10 @@
 /.build/
 
 RELEASE-VERSION
-APPNAME.pc
+bowsprit.pc
 
-/APPNAME*.tar.gz
-/APPNAME*.tar.bz2
+/bowsprit*.tar.gz
+/bowsprit*.tar.bz2
 
 *.[oa]
 *.os
