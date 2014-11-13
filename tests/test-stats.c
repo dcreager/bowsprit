@@ -63,6 +63,49 @@ START_TEST(test_nothing)
 }
 END_TEST
 
+START_TEST(test_derive_01)
+{
+    struct bws_ctx  *ctx;
+    struct bws_plugin  *plugin;
+    struct bws_derive  *frog;
+    struct bws_derive  *cat;
+    struct bws_derive  *dog;
+
+    DESCRIBE_TEST;
+
+    ctx = bws_ctx_new("localhost");
+    plugin = bws_plugin_new(ctx, "animals", NULL);
+    frog = bws_derive_new(plugin, "ribbits", "frog");
+    cat = bws_derive_new(plugin, "meows", "cat");
+    dog = bws_derive_new(plugin, "barks", "dog");
+
+    bws_derive_inc(frog);
+    bws_derive_add(cat, 10);
+    bws_derive_inc(frog);
+    bws_derive_inc(frog);
+    bws_derive_add(dog, 10);
+
+    check_render
+        (ctx,
+         "10 animals/barks-dog\n"
+         "10 animals/meows-cat\n"
+         " 3 animals/ribbits-frog\n"
+         );
+
+    bws_derive_add(dog, 5);
+    bws_derive_inc(frog);
+
+    check_render
+        (ctx,
+         "15 animals/barks-dog\n"
+         "10 animals/meows-cat\n"
+         " 4 animals/ribbits-frog\n"
+         );
+
+    bws_ctx_free(ctx);
+}
+END_TEST
+
 START_TEST(test_gauge_01)
 {
     struct bws_ctx  *ctx;
@@ -122,20 +165,19 @@ START_TEST(test_multi_01)
     struct bws_ctx  *ctx;
     struct bws_plugin  *plugin;
     struct bws_measurement  *if_packets;
-    struct bws_gauge  *tx;
-    struct bws_gauge  *rx;
+    struct bws_derive  *tx;
+    struct bws_derive  *rx;
 
     DESCRIBE_TEST;
 
     ctx = bws_ctx_new("localhost");
     plugin = bws_plugin_new(ctx, "network", NULL);
     if_packets = bws_measurement_new(plugin, "if_packets", "eth0");
-    /* TODO: These are really derives */
-    tx = bws_measurement_add_gauge(if_packets, "tx");
-    rx = bws_measurement_add_gauge(if_packets, "rx");
+    tx = bws_measurement_add_derive(if_packets, "tx");
+    rx = bws_measurement_add_derive(if_packets, "rx");
 
-    bws_gauge_add(tx, 10);
-    bws_gauge_add(rx, 20);
+    bws_derive_add(tx, 10);
+    bws_derive_add(rx, 20);
 
     check_render
         (ctx,
@@ -159,6 +201,7 @@ test_suite()
 
     TCase  *tc_stats = tcase_create("stats");
     tcase_add_test(tc_stats, test_nothing);
+    tcase_add_test(tc_stats, test_derive_01);
     tcase_add_test(tc_stats, test_gauge_01);
     tcase_add_test(tc_stats, test_multi_01);
     suite_add_tcase(s, tc_stats);

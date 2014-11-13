@@ -46,6 +46,36 @@ bws_plugin_new(struct bws_ctx *ctx, const char *name, const char *instance);
 
 
 /*-----------------------------------------------------------------------
+ * derive
+ */
+
+struct bws_derive {
+    uint64_t  value;
+};
+
+CORK_ATTR_UNUSED
+static void
+bws_derive_add(struct bws_derive *derive, uint64_t delta)
+{
+    derive->value += delta;
+}
+
+CORK_ATTR_UNUSED
+static void
+bws_derive_inc(struct bws_derive *derive)
+{
+    bws_derive_add(derive, 1);
+}
+
+CORK_ATTR_UNUSED
+static uint64_t
+bws_derive_get(const struct bws_derive *derive)
+{
+    return derive->value;
+}
+
+
+/*-----------------------------------------------------------------------
  * Gauge
  */
 
@@ -111,10 +141,19 @@ struct bws_measurement *
 bws_measurement_new(struct bws_plugin *plugin,
                     const char *type_name, const char *type_instance);
 
+struct bws_derive *
+bws_measurement_add_derive(struct bws_measurement *measurement,
+                          const char *name);
+
 struct bws_gauge *
 bws_measurement_add_gauge(struct bws_measurement *measurement,
                           const char *name);
 
+
+/* type_instance can be NULL */
+struct bws_derive *
+bws_derive_new(struct bws_plugin *plugin,
+               const char *type_name, const char *type_instance);
 
 /* type_instance can be NULL */
 struct bws_gauge *

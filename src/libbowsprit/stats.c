@@ -20,10 +20,21 @@ struct bws_value {
     struct bws_value  *next;
     const char  *name;
     union {
+        struct bws_derive  derive;
         struct bws_gauge  gauge;
     } _;
     enum bws_value_kind  kind;
 };
+
+static struct bws_value *
+bws_derive_value_new(const char *name)
+{
+    struct bws_value *value = cork_new(struct bws_value);
+    value->name = cork_strdup(name);
+    value->kind = BWS_DERIVE;
+    value->_.derive.value = 0;
+    return value;
+}
 
 static struct bws_value *
 bws_gauge_value_new(const char *name)
@@ -50,6 +61,9 @@ bws_value_snapshot(struct bws_measurement *measurement, struct bws_value *value,
     dest->name = value->name;
     dest->kind = value->kind;
     switch (value->kind) {
+        case BWS_DERIVE:
+            dest->value = value->_.derive.value;
+            break;
         case BWS_GAUGE:
             dest->value = value->_.gauge.value;
             break;
@@ -99,6 +113,19 @@ bws_measurement_priv_free(struct bws_measurement_priv *measurement)
         cork_strfree(measurement->public.type_instance);
     }
     cork_delete(struct bws_measurement_priv, measurement);
+}
+
+struct bws_derive *
+bws_measurement_add_derive(struct bws_measurement *pmeasurement,
+                           const char *name)
+{
+    struct bws_measurement_priv  *measurement =
+        cork_container_of(pmeasurement, struct bws_measurement_priv, public);
+    struct bws_value  *value = bws_derive_value_new(name);
+    value->next = measurement->values;
+    measurement->values = value;
+    measurement->value_count++;
+    return &value->_.derive;
 }
 
 struct bws_gauge *
@@ -163,6 +190,15 @@ bws_measurement_new(struct bws_plugin *pplugin,
     measurement->next = plugin->measurements;
     plugin->measurements = measurement;
     return &measurement->public;
+}
+
+struct bws_derive *
+bws_derive_new(struct bws_plugin *plugin,
+               const char *type_name, const char *type_instance)
+{
+    struct bws_measurement  *measurement =
+        bws_measurement_new(plugin, type_name, type_instance);
+    return bws_measurement_add_derive(measurement, "value");
 }
 
 struct bws_gauge *
