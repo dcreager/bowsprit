@@ -10,13 +10,18 @@
 # of each man page.
 
 set(MAN_HEADER "Bowsprit documentation")
-set(MAN_FOOTER "bowsprit")
-
-# Fill this in with any man pages that should be built from a pandoc source
-# file.  For a man page called foo.5, there should be a pandoc source file
-# called foo.5.pandoc.
+set(MAN_FOOTER "Bowsprit")
 
 set(MAN_PAGES
+    bws_ctx.3
+    bws_gauge.3
+    bws_measurement.3
+    bws_plugin.3
+    bws_snapshot.3
+    bws_snapshot_filter.3
+    bws_snapshot_render.3
+    bws_snapshot_sort.3
+    bowsprit.7
 )
 
 #-----------------------------------------------------------------------
