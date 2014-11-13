@@ -8,9 +8,19 @@
  */
 
 #include <libcork/core.h>
+#include <libcork/threads.h>
 
 #include "bowsprit.h"
 
+
+#define add_to_list(head, element) \
+    do { \
+        do { \
+            old_head = (head); \
+            (element)->next = old_head; \
+        } while (CORK_UNLIKELY(cork_ptr_cas(&(head), old_head, (element)) \
+                               != old_head)); \
+    } while (0)
 
 /*-----------------------------------------------------------------------
  * Measured values
@@ -79,8 +89,8 @@ bws_value_snapshot(struct bws_measurement *measurement, struct bws_value *value,
 
 struct bws_measurement_priv {
     struct bws_measurement  public;
-    size_t  value_count;
-    struct bws_value  *values;
+    volatile size_t  value_count;
+    struct bws_value * volatile  values;
     struct bws_measurement_priv  *next;
 };
 
@@ -122,9 +132,9 @@ bws_measurement_add_derive(struct bws_measurement *pmeasurement,
     struct bws_measurement_priv  *measurement =
         cork_container_of(pmeasurement, struct bws_measurement_priv, public);
     struct bws_value  *value = bws_derive_value_new(name);
-    value->next = measurement->values;
-    measurement->values = value;
-    measurement->value_count++;
+    struct bws_value  *old_head;
+    add_to_list(measurement->values, value);
+    cork_size_atomic_add(&measurement->value_count, 1);
     return &value->_.derive;
 }
 
@@ -135,9 +145,9 @@ bws_measurement_add_gauge(struct bws_measurement *pmeasurement,
     struct bws_measurement_priv  *measurement =
         cork_container_of(pmeasurement, struct bws_measurement_priv, public);
     struct bws_value  *value = bws_gauge_value_new(name);
-    value->next = measurement->values;
-    measurement->values = value;
-    measurement->value_count++;
+    struct bws_value  *old_head;
+    add_to_list(measurement->values, value);
+    cork_size_atomic_add(&measurement->value_count, 1);
     return &value->_.gauge;
 }
 
@@ -148,7 +158,7 @@ bws_measurement_add_gauge(struct bws_measurement *pmeasurement,
 
 struct bws_plugin_priv {
     struct bws_plugin  public;
-    struct bws_measurement_priv  *measurements;
+    struct bws_measurement_priv * volatile  measurements;
     struct bws_plugin_priv  *next;
 };
 
@@ -187,8 +197,8 @@ bws_measurement_new(struct bws_plugin *pplugin,
         cork_container_of(pplugin, struct bws_plugin_priv, public);
     struct bws_measurement_priv  *measurement =
         bws_measurement_priv_new(pplugin, type_name, type_instance);
-    measurement->next = plugin->measurements;
-    plugin->measurements = measurement;
+    struct bws_measurement_priv  *old_head;
+    add_to_list(plugin->measurements, measurement);
     return &measurement->public;
 }
 
@@ -244,7 +254,7 @@ bws_plugin_snapshot(struct bws_plugin *pplugin, struct bws_snapshot *dest)
 
 struct bws_ctx_priv {
     struct bws_ctx  public;
-    struct bws_plugin_priv  *plugins;
+    struct bws_plugin_priv * volatile  plugins;
 };
 
 struct bws_ctx *
@@ -277,8 +287,8 @@ bws_plugin_new(struct bws_ctx *pctx, const char *name, const char *instance)
     struct bws_ctx_priv  *ctx =
         cork_container_of(pctx, struct bws_ctx_priv, public);
     struct bws_plugin_priv  *plugin = bws_plugin_priv_new(pctx, name, instance);
-    plugin->next = ctx->plugins;
-    ctx->plugins = plugin;
+    struct bws_plugin_priv  *old_head;
+    add_to_list(ctx->plugins, plugin);
     return &plugin->public;
 }
 
