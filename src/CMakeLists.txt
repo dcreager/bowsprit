@@ -12,7 +12,9 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 # Build the library
 
 set(LIBBOWSPRIT_SRC
-    libbowsprit/foo.c
+    libbowsprit/render.c
+    libbowsprit/snapshot.c
+    libbowsprit/stats.c
 )
 
 # Update the VERSION and SOVERSION properties below according to the following
