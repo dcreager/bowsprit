@@ -1,0 +1,49 @@
+.TH "bws_snapshot_render" "3" "2014-11-14" "Bowsprit" "Bowsprit\ documentation"
+.SH NAME
+.PP
+bws_snapshot_render \[en] Rendering snapshots
+.SH SYNOPSIS
+.PP
+\f[B]#include <stdio.h>\f[]
+.PD 0
+.P
+.PD
+\f[B]#include <bowsprit.h>\f[]
+.PP
+void
+.PD 0
+.P
+.PD
+\f[B]bws_snapshot_render_to_buffer\f[](struct bws_snapshot
+*\f[I]snapshot\f[],
+.PD 0
+.P
+.PD
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ struct
+cork_buffer *\f[I]dest\f[]);
+.PP
+void
+.PD 0
+.P
+.PD
+\f[B]bws_snapshot_render_to_stream\f[](struct bws_snapshot
+*\f[I]snapshot\f[],
+.PD 0
+.P
+.PD
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FILE
+*\f[I]dest\f[]);
+.SH DESCRIPTION
+.PP
+The \f[B]bws_snapshot_render\f[] family of functions pretty\-prints each
+of the values in a snapshot.
+Each value is printed on a separate line.
+You don't have any control over the format that's used for each value;
+if you want to do that, you can iterate through the contents of the
+snapshot yourself.
+.PP
+\f[B]bws_snapshot_render_to_buffer\f[]() prints the values into a
+\f[B]cork_buffer\f[](3) instance.
+.PP
+\f[B]bws_snapshot_render_to_buffer\f[]() prints the values to the given
+C stream.

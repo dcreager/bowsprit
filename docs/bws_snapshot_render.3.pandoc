@@ -1,0 +1,30 @@
+% bws_snapshot_render(3)
+
+# NAME
+
+bws_snapshot_render -- Rendering snapshots
+
+# SYNOPSIS
+
+| **#include &lt;stdio.h&gt;**
+| **#include &lt;bowsprit.h&gt;**
+|
+| void
+| **bws_snapshot_render_to_buffer**(struct bws_snapshot \**snapshot*,
+|                               struct cork_buffer \**dest*);
+|
+| void
+| **bws_snapshot_render_to_stream**(struct bws_snapshot \**snapshot*,
+|                               FILE \**dest*);
+
+# DESCRIPTION
+
+The **bws_snapshot_render** family of functions pretty-prints each of the values
+in a snapshot.  Each value is printed on a separate line.  You don't have any
+control over the format that's used for each value; if you want to do that, you
+can iterate through the contents of the snapshot yourself.
+
+**bws_snapshot_render_to_buffer**() prints the values into a **cork_buffer**(3)
+instance.
+
+**bws_snapshot_render_to_buffer**() prints the values to the given C stream.

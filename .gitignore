@@ -1,0 +1,13 @@
+/build/
+/.build/
+
+RELEASE-VERSION
+bowsprit.pc
+
+/bowsprit*.tar.gz
+/bowsprit*.tar.bz2
+
+*.[oa]
+*.os
+*.so
+*.dylib
