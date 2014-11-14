@@ -16,7 +16,9 @@ set(MAN_PAGES
     bws_ctx.3
     bws_gauge.3
     bws_measurement.3
+    bws_periodic.3
     bws_plugin.3
+    bws_rotated_files.3
     bws_snapshot.3
     bws_snapshot_filter.3
     bws_snapshot_render.3

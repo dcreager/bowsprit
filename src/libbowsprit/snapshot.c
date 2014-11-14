@@ -53,7 +53,7 @@ bws_snapshot_resize(struct bws_snapshot *psnapshot, size_t count)
     struct bws_snapshot_priv  *snapshot =
         cork_container_of(psnapshot, struct bws_snapshot_priv, public);
     snapshot->public.count = count;
-    if (CORK_UNLIKELY(snapshot->allocated_count == 0)) {
+    if (CORK_UNLIKELY(snapshot->allocated_count == 0 && count != 0)) {
         size_t  size = count * sizeof(struct bws_value_snapshot);
         snapshot->public.values = cork_malloc(size);
         snapshot->allocated_count = count;

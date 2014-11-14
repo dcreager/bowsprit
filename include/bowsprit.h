@@ -13,6 +13,7 @@
 #include <stdio.h>
 
 #include <libcork/core.h>
+#include <libcork/threads.h>
 
 
 /*-----------------------------------------------------------------------
@@ -215,6 +216,63 @@ bws_snapshot_render_to_buffer(struct bws_snapshot *snapshot,
 
 void
 bws_snapshot_render_to_stream(struct bws_snapshot *snapshot, FILE *dest);
+
+
+/*-----------------------------------------------------------------------
+ * Periodic tasks
+ */
+
+struct bws_periodic;
+
+typedef int
+(*bws_periodic_run_f)(void *user_data, struct bws_snapshot *snapshot,
+                      cork_timestamp now);
+
+struct bws_periodic *
+bws_periodic_new(struct bws_ctx *ctx,
+                 void *user_data, cork_free_f free_user_data,
+                 bws_periodic_run_f run);
+
+void
+bws_periodic_free(struct bws_periodic *periodic);
+
+/* 0 means to use the default, which is currently 30 seconds */
+void
+bws_periodic_set_interval(struct bws_periodic *periodic, unsigned int seconds);
+
+int
+bws_periodic_poll(struct bws_periodic *periodic);
+
+/* Useful for test cases */
+int
+bws_periodic_mocked_poll(struct bws_periodic *periodic, cork_timestamp now);
+
+
+int
+bws_periodic_run_in_background(struct bws_periodic *periodic);
+
+int
+bws_periodic_join(struct bws_periodic *periodic);
+
+
+/*-----------------------------------------------------------------------
+ * Rotation
+ */
+
+struct bws_rotated_files;
+
+struct bws_rotated_files *
+bws_rotated_files_new(struct bws_ctx *ctx, const char *output_path);
+
+void
+bws_rotated_files_free(struct bws_rotated_files *rotated);
+
+struct bws_periodic *
+bws_rotated_files_periodic(struct bws_rotated_files *rotated);
+
+void
+bws_rotated_files_set_file_duration(struct bws_rotated_files *rotated,
+                                    unsigned int minutes);
 
 
 #endif /* BOWSPRIT_H */
