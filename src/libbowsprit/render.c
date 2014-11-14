@@ -19,7 +19,7 @@
  * Common stuffs
  */
 
-static size_t
+size_t
 bws_snapshot_max_width(struct bws_snapshot *snapshot)
 {
     size_t  i;
@@ -39,6 +39,27 @@ bws_snapshot_max_width(struct bws_snapshot *snapshot)
  */
 
 void
+bws_value_snapshot_render_to_buffer(struct bws_value_snapshot *value,
+                                    struct cork_buffer *dest, int width)
+{
+    struct bws_measurement  *measurement = value->measurement;
+    struct bws_plugin  *plugin = measurement->plugin;
+
+    cork_buffer_append_printf
+        (dest, "%*" PRIu64 " %s", width, value->value, plugin->name);
+    if (plugin->instance != NULL) {
+        cork_buffer_append_printf(dest, "-%s", plugin->instance);
+    }
+    cork_buffer_append_printf(dest, "/%s", measurement->type_name);
+    if (measurement->type_instance != NULL) {
+        cork_buffer_append_printf(dest, "-%s", measurement->type_instance);
+    }
+    if (strcmp(value->name, "value") != 0) {
+        cork_buffer_append_printf(dest, "/%s", value->name);
+    }
+}
+
+void
 bws_snapshot_render_to_buffer(struct bws_snapshot *snapshot,
                               struct cork_buffer *dest)
 {
@@ -46,21 +67,7 @@ bws_snapshot_render_to_buffer(struct bws_snapshot *snapshot,
     int  width = bws_snapshot_max_width(snapshot);
     for (i = 0; i < snapshot->count; i++) {
         struct bws_value_snapshot  *value = &snapshot->values[i];
-        struct bws_measurement  *measurement = value->measurement;
-        struct bws_plugin  *plugin = measurement->plugin;
-
-        cork_buffer_append_printf
-            (dest, "%*" PRIu64 " %s", width, value->value, plugin->name);
-        if (plugin->instance != NULL) {
-            cork_buffer_append_printf(dest, "-%s", plugin->instance);
-        }
-        cork_buffer_append_printf(dest, "/%s", measurement->type_name);
-        if (measurement->type_instance != NULL) {
-            cork_buffer_append_printf(dest, "-%s", measurement->type_instance);
-        }
-        if (strcmp(value->name, "value") != 0) {
-            cork_buffer_append_printf(dest, "/%s", value->name);
-        }
+        bws_value_snapshot_render_to_buffer(value, dest, width);
         cork_buffer_append_literal(dest, "\n");
     }
 }

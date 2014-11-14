@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 
+#include <clogger.h>
 #include <libcork/core.h>
 #include <libcork/threads.h>
 
@@ -210,6 +211,13 @@ bws_snapshot_filter_by_type_name(struct bws_snapshot *src,
 void
 bws_snapshot_sort(struct bws_snapshot *snapshot);
 
+size_t
+bws_snapshot_max_width(struct bws_snapshot *snapshot);
+
+void
+bws_value_snapshot_render_to_buffer(struct bws_value_snapshot *value,
+                                    struct cork_buffer *dest, int max_width);
+
 void
 bws_snapshot_render_to_buffer(struct bws_snapshot *snapshot,
                               struct cork_buffer *dest);
@@ -253,6 +261,14 @@ bws_periodic_run_in_background(struct bws_periodic *periodic);
 
 int
 bws_periodic_join(struct bws_periodic *periodic);
+
+
+/*-----------------------------------------------------------------------
+ * Logging
+ */
+
+struct bws_periodic *
+bws_logger_new(struct bws_ctx *ctx, const char *channel, enum clog_level level);
 
 
 /*-----------------------------------------------------------------------
