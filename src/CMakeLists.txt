@@ -12,7 +12,9 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 # Build the library
 
 set(LIBBOWSPRIT_SRC
+    libbowsprit/periodic.c
     libbowsprit/render.c
+    libbowsprit/rotated-files.c
     libbowsprit/snapshot.c
     libbowsprit/stats.c
 )
@@ -53,6 +55,16 @@ target_link_libraries(libbowsprit
 )
 
 install(TARGETS libbowsprit DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+#-----------------------------------------------------------------------
+# bowsprit-test
+
+set(BOWSPRIT_TEST_SRC
+    bowsprit-test/bowsprit-test.c
+)
+
+add_executable(bowsprit-test ${BOWSPRIT_TEST_SRC})
+target_link_libraries(bowsprit-test libbowsprit)
 
 #-----------------------------------------------------------------------
 # Generate the pkg-config file

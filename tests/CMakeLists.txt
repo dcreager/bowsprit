@@ -27,6 +27,7 @@ macro(make_test test_name)
     add_test(${test_name} ${test_name})
 endmacro(make_test)
 
+make_test(test-periodic)
 make_test(test-stats)
 
 #-----------------------------------------------------------------------
