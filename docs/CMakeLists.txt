@@ -14,6 +14,7 @@ set(MAN_FOOTER "Bowsprit")
 
 set(MAN_PAGES
     bws_ctx.3
+    bws_derive.3
     bws_gauge.3
     bws_measurement.3
     bws_periodic.3

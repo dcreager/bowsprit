@@ -11,7 +11,7 @@ bws_snapshot_sort -- Sorting snapshots
 | void
 | **bws_snapshot_sort**(struct bws_snapshot \**snapshot*);
 
-## DESCRIPTION
+# DESCRIPTION
 
 **bws_snapshot_sort**() sorts the values in a snapshot in descending order.  The
 sorting is done in-place and is stable.

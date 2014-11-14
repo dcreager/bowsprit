@@ -56,7 +56,7 @@ by 1.  **bws_gauge_add**() and **bws_gauge_sub**() add or remove an arbitrary
 **bws_gauge_get**() returns the gauge's current value.
 
 
-## RETURN VALUES
+# RETURN VALUES
 
 **bws_measure_add_gauge**() and **bws_gauge_new**() always return a valid new
 gauge object.  If there are any memory allocation errors, we will abort the

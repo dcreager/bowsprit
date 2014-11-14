@@ -67,7 +67,7 @@ Note that you cannot explicitly free a measurement object yourself; the
 measurement will be automatically freed when its context is freed.
 
 
-## RETURN VALUES
+# RETURN VALUES
 
 **bws_measurement_new**() always returns a valid new measurement object.  If
 there are any memory allocation errors, we will abort the process.

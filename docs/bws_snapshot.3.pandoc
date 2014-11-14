@@ -41,7 +41,7 @@ bws_snapshot -- Snapshots
 |                     struct bws_snapshot \**dest*);
 
 
-## DESCRIPTION
+# DESCRIPTION
 
 A **bws_snapshot** instance lets you record a snapshot of the current values of
 a collection of measurements at a single point in time, and perform some simple
@@ -73,7 +73,7 @@ filter the snapshot using **bws_snapshot_filter_by_type**(3), and sort it using
 **bws_snapshot_render_to_buffer**(3) or **bws_snapshot_render_to_stream**(3).
 
 
-## RETURN VALUES
+# RETURN VALUES
 
 **bws_snapshot_new**() always returns a valid new snapshot object.  If there are
 any memory allocation errors, we will abort the process.

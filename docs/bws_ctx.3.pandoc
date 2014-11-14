@@ -42,7 +42,7 @@ measurements that it contains.  It is your responsibility to not try to access
 any of the context's plugins and measurements after the context has been freed.
 
 
-## RETURN VALUES
+# RETURN VALUES
 
 **bws_ctx_new**() always returns a valid new context object.  If there are any
 memory allocation errors, we will abort the process.

@@ -40,7 +40,7 @@ Note that you cannot explicitly free a plugin object yourself; the plugin will
 be automatically freed when its context is freed.
 
 
-## RETURN VALUES
+# RETURN VALUES
 
 **bws_plugin_new**() always returns a valid new plugin object.  If there are any
 memory allocation errors, we will abort the process.

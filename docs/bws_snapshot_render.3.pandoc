@@ -17,7 +17,7 @@ bws_snapshot_render -- Rendering snapshots
 | **bws_snapshot_render_to_stream**(struct bws_snapshot \**snapshot*,
 |                               FILE \**dest*);
 
-## DESCRIPTION
+# DESCRIPTION
 
 The **bws_snapshot_render** family of functions pretty-prints each of the values
 in a snapshot.  Each value is printed on a separate line.  You don't have any

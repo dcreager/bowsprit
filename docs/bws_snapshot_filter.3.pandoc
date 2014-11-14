@@ -13,7 +13,7 @@ bws_snapshot_filter -- Filtering snapshots
 |                                  const char \**type_name*,
 |                                  struct bws_snapshot \**dest*);
 
-## DESCRIPTION
+# DESCRIPTION
 
 The **bws_snapshot_filter** family of functions filters the contents of a source
 snapshot, writing the results into a separate destination snapshot.  (The

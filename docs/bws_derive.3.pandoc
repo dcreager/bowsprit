@@ -47,7 +47,7 @@ arbitrary *delta* to a derive.  **bws_derive_get**() returns the derive's
 current value.
 
 
-## RETURN VALUES
+# RETURN VALUES
 
 **bws_measure_add_derive**() and **bws_derive_new**() always return a valid new
 derive object.  If there are any memory allocation errors, we will abort the
