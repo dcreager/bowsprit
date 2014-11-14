@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <unistd.h>
 
+#include <clogger.h>
 #include <libcork/core.h>
 #include <libcork/ds.h>
 #include <libcork/os.h>
@@ -17,6 +18,8 @@
 #include <libcork/helpers/errors.h>
 
 #include "bowsprit.h"
+
+#define CLOG_CHANNEL  "bowsprit"
 
 
 /*-----------------------------------------------------------------------
@@ -77,10 +80,12 @@ static int
 bws_periodic_poll_(struct bws_periodic *periodic, cork_timestamp now)
 {
     if (CORK_UNLIKELY(periodic->next_fire == 0)) {
+        clog_debug("Process first snapshot");
         periodic->next_fire = now + periodic->interval;
         bws_ctx_snapshot(periodic->ctx, periodic->snapshot);
         return periodic->run(periodic->user_data, periodic->snapshot, now);
     } else if (CORK_UNLIKELY(now >= periodic->next_fire)) {
+        clog_debug("Process snapshot");
         cork_timestamp  fire_ts = periodic->next_fire;
         periodic->next_fire += periodic->interval;
         bws_ctx_snapshot(periodic->ctx, periodic->snapshot);

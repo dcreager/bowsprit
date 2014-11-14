@@ -7,10 +7,10 @@
  * ----------------------------------------------------------------------
  */
 
-#define CORK_PRINT_ERRORS  1
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <clogger.h>
 #include <libcork/core.h>
 #include <libcork/ds.h>
 #include <libcork/os.h>
@@ -18,6 +18,8 @@
 #include <libcork/helpers/posix.h>
 
 #include "bowsprit.h"
+
+#define CLOG_CHANNEL  "bowsprit"
 
 
 /*-----------------------------------------------------------------------
@@ -53,6 +55,8 @@ bws_rotated_files_open_file(struct bws_rotated_files *rotated,
     rotated->real_filename =
         cork_path_join(rotated->output_path, rotated->buf.buf);
 
+    clog_debug("Open statistics file %s",
+               cork_path_get(rotated->real_filename));
     ep_check_posix(rotated->out =
                    fopen(cork_path_get(rotated->temp_filename), "w"));
     rotated->file_expiration = now + rotated->file_duration;
@@ -67,6 +71,8 @@ error:
 static int
 bws_rotated_files_close_file(struct bws_rotated_files *rotated)
 {
+    clog_debug("Close statistics file %s",
+               cork_path_get(rotated->real_filename));
     ei_check_posix(fclose(rotated->out));
     ei_check_posix(rename(cork_path_get(rotated->temp_filename),
                           cork_path_get(rotated->real_filename)));
@@ -94,9 +100,11 @@ bws_rotated_files__run(void *user_data, struct bws_snapshot *snapshot,
     }
 
     cork_buffer_clear(&rotated->buf);
-    cork_timestamp_format_utc
-        (now, "=== Statistics of as of %Y-%m-%d %H:%M:%S\n", &rotated->buf);
+    cork_timestamp_format_utc(now, "%Y-%m-%d %H:%M:%S", &rotated->buf);
+    clog_debug("Output statistics as of %s", (char *) rotated->buf.buf);
+    fputs("=== Statistics of as of ", rotated->out);
     fwrite(rotated->buf.buf, 1, rotated->buf.size, rotated->out);
+    putc('\n', rotated->out);
 
     bws_snapshot_render_to_stream(snapshot, rotated->out);
     rii_check_posix(fflush(rotated->out));

@@ -5,9 +5,9 @@ includedir=${prefix}/include
 sharedir=${prefix}/share
 
 Name: Bowsprit
-Description: Counters and statistics and whatnot
+Description: Collectd-style counters and statistics and whatnot
 Version: @VERSION@
 URL: https://github.com/redjack/bowsprit/
 Libs: -L${libdir} -lbowsprit
 Cflags: -I${includedir}
-Requires: libcork >= 0.14.0
+Requires: libcork >= 0.14.0, clogger >= 0.3.0

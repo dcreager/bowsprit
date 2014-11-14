@@ -12,6 +12,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 # Build the library
 
 set(LIBBOWSPRIT_SRC
+    libbowsprit/logger.c
     libbowsprit/periodic.c
     libbowsprit/render.c
     libbowsprit/rotated-files.c
@@ -52,6 +53,7 @@ set_target_properties(libbowsprit PROPERTIES
     SOVERSION 0)
 target_link_libraries(libbowsprit
     ${CORK_LIBRARIES}
+    ${CLOG_LIBRARIES}
 )
 
 install(TARGETS libbowsprit DESTINATION ${CMAKE_INSTALL_LIBDIR})

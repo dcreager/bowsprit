@@ -62,6 +62,10 @@ pkg_check_modules(CORK REQUIRED libcork>=0.14.0)
 include_directories(${CORK_INCLUDE_DIRS})
 link_directories(${CORK_LIBRARY_DIRS})
 
+pkg_check_modules(CLOG REQUIRED clogger>=0.3.0)
+include_directories(${CLOG_INCLUDE_DIRS})
+link_directories(${CLOG_LIBRARY_DIRS})
+
 #-----------------------------------------------------------------------
 # Set some options
 
