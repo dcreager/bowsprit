@@ -19,16 +19,16 @@ bws_gauge -- Gauges
 |               const char \**type_name*,
 |               const char \**type_instance*);
 |
-| void
+| uint64_t
 | **bws_gauge_inc**(struct bws_gauge \**gauge*);
 |
-| void
+| uint64_t
 | **bws_gauge_dec**(struct bws_gauge \**gauge*);
 |
-| void
+| uint64_t
 | **bws_gauge_add**(struct bws_gauge \**gauge*, uint64_t *delta*);
 |
-| void
+| uint64_t
 | **bws_gauge_sub**(struct bws_gauge \**gauge*, uint64_t *delta*);
 |
 | void
@@ -61,3 +61,6 @@ by 1.  **bws_gauge_add**() and **bws_gauge_sub**() add or remove an arbitrary
 **bws_measure_add_gauge**() and **bws_gauge_new**() always return a valid new
 gauge object.  If there are any memory allocation errors, we will abort the
 process.
+
+**bws_gauge_inc**(), **bws_gauge_dec**(), **bws_gauge_add**(), and
+**bws_gauge_sub**() all return the new value of the gauge.

@@ -34,26 +34,26 @@ struct bws_gauge *
 .PD
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ const char *\f[I]type_instance\f[]);
 .PP
-void
+uint64_t
 .PD 0
 .P
 .PD
 \f[B]bws_gauge_inc\f[](struct bws_gauge *\f[I]gauge\f[]);
 .PP
-void
+uint64_t
 .PD 0
 .P
 .PD
 \f[B]bws_gauge_dec\f[](struct bws_gauge *\f[I]gauge\f[]);
 .PP
-void
+uint64_t
 .PD 0
 .P
 .PD
 \f[B]bws_gauge_add\f[](struct bws_gauge *\f[I]gauge\f[], uint64_t
 \f[I]delta\f[]);
 .PP
-void
+uint64_t
 .PD 0
 .P
 .PD
@@ -97,3 +97,7 @@ arbitrary \f[I]delta\f[] to a gauge.
 \f[B]bws_measure_add_gauge\f[]() and \f[B]bws_gauge_new\f[]() always
 return a valid new gauge object.
 If there are any memory allocation errors, we will abort the process.
+.PP
+\f[B]bws_gauge_inc\f[](), \f[B]bws_gauge_dec\f[](),
+\f[B]bws_gauge_add\f[](), and \f[B]bws_gauge_sub\f[]() all return the
+new value of the gauge.

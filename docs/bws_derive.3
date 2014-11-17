@@ -34,13 +34,13 @@ struct bws_derive *
 .PD
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ const char *\f[I]type_instance\f[]);
 .PP
-void
+uint64_t
 .PD 0
 .P
 .PD
 \f[B]bws_derive_inc\f[](struct bws_derive *\f[I]derive\f[]);
 .PP
-void
+uint64_t
 .PD 0
 .P
 .PD
@@ -75,3 +75,6 @@ derive will be automatically freed when its context is freed.
 \f[B]bws_measure_add_derive\f[]() and \f[B]bws_derive_new\f[]() always
 return a valid new derive object.
 If there are any memory allocation errors, we will abort the process.
+.PP
+\f[B]bws_derive_inc\f[]() and \f[B]bws_derive_add\f[]() both return the
+new value of the derive.
