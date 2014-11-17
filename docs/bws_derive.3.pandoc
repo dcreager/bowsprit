@@ -19,10 +19,10 @@ bws_derive -- Derives
 |               const char \**type_name*,
 |               const char \**type_instance*);
 |
-| void
+| uint64_t
 | **bws_derive_inc**(struct bws_derive \**derive*);
 |
-| void
+| uint64_t
 | **bws_derive_add**(struct bws_derive \**derive*, uint64_t *delta*);
 |
 | uint64_t
@@ -52,3 +52,6 @@ current value.
 **bws_measure_add_derive**() and **bws_derive_new**() always return a valid new
 derive object.  If there are any memory allocation errors, we will abort the
 process.
+
+**bws_derive_inc**() and **bws_derive_add**() both return the new value of the
+derive.
