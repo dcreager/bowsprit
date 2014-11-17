@@ -79,7 +79,7 @@ START_TEST(test_derive_01)
     cat = bws_derive_new(plugin, "meows", "cat");
     dog = bws_derive_new(plugin, "barks", "dog");
 
-    fail_unless_equal("frog", "%" PRIu64, uint64_t,  1, bws_derive_inc(frog));
+    bws_derive_set(frog, 1);
     fail_unless_equal("cat",  "%" PRIu64, uint64_t, 10, bws_derive_add(cat, 10));
     fail_unless_equal("frog", "%" PRIu64, uint64_t,  2, bws_derive_inc(frog));
     fail_unless_equal("frog", "%" PRIu64, uint64_t,  3, bws_derive_inc(frog));
@@ -122,7 +122,7 @@ START_TEST(test_gauge_01)
     cat = bws_gauge_new(plugin, "meows", "cat");
     dog = bws_gauge_new(plugin, "barks", "dog");
 
-    fail_unless_equal("frog", "%" PRIu64, uint64_t,  1, bws_gauge_inc(frog));
+    bws_gauge_set(frog, 1);
     fail_unless_equal("cat",  "%" PRIu64, uint64_t, 10, bws_gauge_add(cat, 10));
     fail_unless_equal("frog", "%" PRIu64, uint64_t,  2, bws_gauge_inc(frog));
     fail_unless_equal("frog", "%" PRIu64, uint64_t,  3, bws_gauge_inc(frog));

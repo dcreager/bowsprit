@@ -47,6 +47,13 @@ uint64_t
 \f[B]bws_derive_add\f[](struct bws_derive *\f[I]derive\f[], uint64_t
 \f[I]delta\f[]);
 .PP
+void
+.PD 0
+.P
+.PD
+\f[B]bws_derive_set\f[](struct bws_derive *\f[I]derive\f[], uint64_t
+\f[I]value\f[]);
+.PP
 uint64_t
 .PD 0
 .P
@@ -69,6 +76,10 @@ derive will be automatically freed when its context is freed.
 .PP
 \f[B]bws_derive_inc\f[]() increments a derive by 1.
 \f[B]bws_derive_add\f[]() adds an arbitrary \f[I]delta\f[] to a derive.
+\f[B]bws_derive_set\f[]() sets the derive to an arbitrary
+\f[I]value\f[].
+It is your responsibility to ensure that that new value is at least as
+large as the old value.
 \f[B]bws_derive_get\f[]() returns the derive's current value.
 .SH RETURN VALUES
 .PP
