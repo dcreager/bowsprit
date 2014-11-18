@@ -76,6 +76,13 @@ bws_derive_get(const struct bws_derive *derive)
     return derive->value;
 }
 
+CORK_ATTR_UNUSED
+static void
+bws_derive_set(struct bws_derive *derive, uint64_t value)
+{
+    derive->value = value;
+}
+
 
 /*-----------------------------------------------------------------------
  * Gauge
