@@ -19,11 +19,14 @@ bws_derive -- Derives
 |               const char \**type_name*,
 |               const char \**type_instance*);
 |
-| void
+| uint64_t
 | **bws_derive_inc**(struct bws_derive \**derive*);
 |
-| void
+| uint64_t
 | **bws_derive_add**(struct bws_derive \**derive*, uint64_t *delta*);
+|
+| void
+| **bws_derive_set**(struct bws_derive \**derive*, uint64_t *value*);
 |
 | uint64_t
 | **bws_derive_get**(const struct bws_derive \**derive*);
@@ -43,7 +46,9 @@ Note that you cannot explicitly free a derive object yourself; the derive will
 be automatically freed when its context is freed.
 
 **bws_derive_inc**() increments a derive by 1.  **bws_derive_add**() adds an
-arbitrary *delta* to a derive.  **bws_derive_get**() returns the derive's
+arbitrary *delta* to a derive.  **bws_derive_set**() sets the derive to an
+arbitrary *value*.  It is your responsibility to ensure that that new value is
+at least as large as the old value.  **bws_derive_get**() returns the derive's
 current value.
 
 
@@ -52,3 +57,6 @@ current value.
 **bws_measure_add_derive**() and **bws_derive_new**() always return a valid new
 derive object.  If there are any memory allocation errors, we will abort the
 process.
+
+**bws_derive_inc**() and **bws_derive_add**() both return the new value of the
+derive.

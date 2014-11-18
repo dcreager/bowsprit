@@ -52,24 +52,24 @@ START_TEST(test_periodic_fire)
     ctx = bws_ctx_new("localhost");
     periodic = bws_periodic_new(ctx, &fired_count, NULL, fire);
 
-    fail_unless_equal("Fire count", "%zu", 0, fired_count);
+    fail_unless_equal("Fire count", "%zu", size_t, 0, fired_count);
 
     fail_if_error(bws_periodic_mocked_poll(periodic, now));
-    fail_unless_equal("Fire count", "%zu", 1, fired_count);
+    fail_unless_equal("Fire count", "%zu", size_t, 1, fired_count);
 
     /* Default interval is 30 seconds, so we shouldn't get another fire until we
      * cross that threshold. */
     now += 5 * seconds;
     fail_if_error(bws_periodic_mocked_poll(periodic, now));
-    fail_unless_equal("Fire count", "%zu", 1, fired_count);
+    fail_unless_equal("Fire count", "%zu", size_t, 1, fired_count);
 
     now += 15 * seconds;
     fail_if_error(bws_periodic_mocked_poll(periodic, now));
-    fail_unless_equal("Fire count", "%zu", 1, fired_count);
+    fail_unless_equal("Fire count", "%zu", size_t, 1, fired_count);
 
     now += 10 * seconds;
     fail_if_error(bws_periodic_mocked_poll(periodic, now));
-    fail_unless_equal("Fire count", "%zu", 2, fired_count);
+    fail_unless_equal("Fire count", "%zu", size_t, 2, fired_count);
 
     bws_periodic_free(periodic);
     bws_ctx_free(ctx);

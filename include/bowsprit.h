@@ -56,17 +56,17 @@ struct bws_derive {
 };
 
 CORK_ATTR_UNUSED
-static void
+static uint64_t
 bws_derive_add(struct bws_derive *derive, uint64_t delta)
 {
-    derive->value += delta;
+    return (derive->value += delta);
 }
 
 CORK_ATTR_UNUSED
-static void
+static uint64_t
 bws_derive_inc(struct bws_derive *derive)
 {
-    bws_derive_add(derive, 1);
+    return bws_derive_add(derive, 1);
 }
 
 CORK_ATTR_UNUSED
@@ -74,6 +74,13 @@ static uint64_t
 bws_derive_get(const struct bws_derive *derive)
 {
     return derive->value;
+}
+
+CORK_ATTR_UNUSED
+static void
+bws_derive_set(struct bws_derive *derive, uint64_t value)
+{
+    derive->value = value;
 }
 
 
@@ -86,31 +93,31 @@ struct bws_gauge {
 };
 
 CORK_ATTR_UNUSED
-static void
+static uint64_t
 bws_gauge_add(struct bws_gauge *gauge, uint64_t delta)
 {
-    gauge->value += delta;
+    return (gauge->value += delta);
 }
 
 CORK_ATTR_UNUSED
-static void
+static uint64_t
 bws_gauge_sub(struct bws_gauge *gauge, uint64_t delta)
 {
-    gauge->value -= delta;
+    return (gauge->value -= delta);
 }
 
 CORK_ATTR_UNUSED
-static void
+static uint64_t
 bws_gauge_inc(struct bws_gauge *gauge)
 {
-    bws_gauge_add(gauge, 1);
+    return bws_gauge_add(gauge, 1);
 }
 
 CORK_ATTR_UNUSED
-static void
+static uint64_t
 bws_gauge_dec(struct bws_gauge *gauge)
 {
-    bws_gauge_sub(gauge, 1);
+    return bws_gauge_sub(gauge, 1);
 }
 
 CORK_ATTR_UNUSED

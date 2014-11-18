@@ -79,11 +79,11 @@ START_TEST(test_derive_01)
     cat = bws_derive_new(plugin, "meows", "cat");
     dog = bws_derive_new(plugin, "barks", "dog");
 
-    bws_derive_inc(frog);
-    bws_derive_add(cat, 10);
-    bws_derive_inc(frog);
-    bws_derive_inc(frog);
-    bws_derive_add(dog, 10);
+    bws_derive_set(frog, 1);
+    fail_unless_equal("cat",  "%" PRIu64, uint64_t, 10, bws_derive_add(cat, 10));
+    fail_unless_equal("frog", "%" PRIu64, uint64_t,  2, bws_derive_inc(frog));
+    fail_unless_equal("frog", "%" PRIu64, uint64_t,  3, bws_derive_inc(frog));
+    fail_unless_equal("dog",  "%" PRIu64, uint64_t, 10, bws_derive_add(dog, 10));
 
     check_render
         (ctx,
@@ -92,8 +92,8 @@ START_TEST(test_derive_01)
          " 3 animals/ribbits-frog\n"
          );
 
-    bws_derive_add(dog, 5);
-    bws_derive_inc(frog);
+    fail_unless_equal("dog",  "%" PRIu64, uint64_t, 15, bws_derive_add(dog, 5));
+    fail_unless_equal("frog", "%" PRIu64, uint64_t,  4, bws_derive_inc(frog));
 
     check_render
         (ctx,
@@ -122,11 +122,11 @@ START_TEST(test_gauge_01)
     cat = bws_gauge_new(plugin, "meows", "cat");
     dog = bws_gauge_new(plugin, "barks", "dog");
 
-    bws_gauge_inc(frog);
-    bws_gauge_add(cat, 10);
-    bws_gauge_inc(frog);
-    bws_gauge_inc(frog);
-    bws_gauge_add(dog, 10);
+    bws_gauge_set(frog, 1);
+    fail_unless_equal("cat",  "%" PRIu64, uint64_t, 10, bws_gauge_add(cat, 10));
+    fail_unless_equal("frog", "%" PRIu64, uint64_t,  2, bws_gauge_inc(frog));
+    fail_unless_equal("frog", "%" PRIu64, uint64_t,  3, bws_gauge_inc(frog));
+    fail_unless_equal("dog",  "%" PRIu64, uint64_t, 10, bws_gauge_add(dog, 10));
 
     check_render
         (ctx,
@@ -135,8 +135,8 @@ START_TEST(test_gauge_01)
          " 3 animals/ribbits-frog\n"
          );
 
-    bws_gauge_inc(frog);
-    bws_gauge_sub(cat, 5);
+    fail_unless_equal("frog", "%" PRIu64, uint64_t,  4, bws_gauge_inc(frog));
+    fail_unless_equal("cat",  "%" PRIu64, uint64_t,  5, bws_gauge_sub(cat, 5));
 
     check_render
         (ctx,
@@ -145,9 +145,9 @@ START_TEST(test_gauge_01)
          " 4 animals/ribbits-frog\n"
          );
 
-    bws_gauge_dec(frog);
-    bws_gauge_dec(frog);
-    bws_gauge_sub(dog, 10);
+    fail_unless_equal("frog", "%" PRIu64, uint64_t,  3, bws_gauge_dec(frog));
+    fail_unless_equal("frog", "%" PRIu64, uint64_t,  2, bws_gauge_dec(frog));
+    fail_unless_equal("dog",  "%" PRIu64, uint64_t,  0, bws_gauge_sub(dog, 10));
 
     check_render
         (ctx,
@@ -176,8 +176,8 @@ START_TEST(test_multi_01)
     tx = bws_measurement_add_derive(if_packets, "tx");
     rx = bws_measurement_add_derive(if_packets, "rx");
 
-    bws_derive_add(tx, 10);
-    bws_derive_add(rx, 20);
+    fail_unless_equal("tx", "%" PRIu64, uint64_t, 10, bws_derive_add(tx, 10));
+    fail_unless_equal("rx", "%" PRIu64, uint64_t, 20, bws_derive_add(rx, 20));
 
     check_render
         (ctx,
