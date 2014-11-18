@@ -8,7 +8,7 @@
 
 cmake_minimum_required(VERSION 2.6)
 set(PROJECT_NAME bowsprit)
-set(RELEASE_DATE 2014-11-14)
+set(RELEASE_DATE 2014-11-18)
 project(${PROJECT_NAME})
 enable_testing()
 
