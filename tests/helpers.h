@@ -68,11 +68,15 @@ setup_allocator(void)
         cork_error_clear(); \
     } while (0)
 
-#define fail_unless_equal(what, format, expected, actual) \
-    (fail_unless((expected) == (actual), \
-                 "%s not equal (expected " format \
-                 ", got " format ")", \
-                 (what), (expected), (actual)))
+#define fail_unless_equal(what, format, type, expected, actual) \
+    do { \
+        type  __expected = (expected); \
+        type  __actual = (actual); \
+        fail_unless(__expected == __actual, \
+                    "%s not equal (expected " format \
+                    ", got " format ")", \
+                    (what), __expected, __actual); \
+    } while (0)
 
 #define fail_unless_streq(what, expected, actual) \
     (fail_unless(strcmp((expected), (actual)) == 0, \
