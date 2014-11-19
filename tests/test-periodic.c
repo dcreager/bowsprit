@@ -27,7 +27,8 @@
  */
 
 static int
-fire(void *user_data, struct bws_snapshot *snapshot, cork_timestamp now)
+fire(void *user_data, struct bws_snapshot *curr, struct bws_snapshot *prev,
+     cork_timestamp now)
 {
     size_t  *count = user_data;
     (*count)++;
