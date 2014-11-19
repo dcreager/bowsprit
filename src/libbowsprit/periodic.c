@@ -77,19 +77,24 @@ bws_periodic_set_interval(struct bws_periodic *periodic, unsigned int seconds)
 }
 
 static int
+bws_periodic_fire(struct bws_periodic *periodic, cork_timestamp now)
+{
+    bws_ctx_snapshot(periodic->ctx, periodic->snapshot);
+    return periodic->run(periodic->user_data, periodic->snapshot, now);
+}
+
+static int
 bws_periodic_poll_(struct bws_periodic *periodic, cork_timestamp now)
 {
     if (CORK_UNLIKELY(periodic->next_fire == 0)) {
         clog_debug("Process first snapshot");
         periodic->next_fire = now + periodic->interval;
-        bws_ctx_snapshot(periodic->ctx, periodic->snapshot);
-        return periodic->run(periodic->user_data, periodic->snapshot, now);
+        return bws_periodic_fire(periodic, now);
     } else if (CORK_UNLIKELY(now >= periodic->next_fire)) {
         clog_debug("Process snapshot");
         cork_timestamp  fire_ts = periodic->next_fire;
         periodic->next_fire += periodic->interval;
-        bws_ctx_snapshot(periodic->ctx, periodic->snapshot);
-        return periodic->run(periodic->user_data, periodic->snapshot, fire_ts);
+        return bws_periodic_fire(periodic, fire_ts);
     } else {
         return 0;
     }
@@ -114,11 +119,16 @@ static int
 bws_periodic__background_run(void *user_data)
 {
     struct bws_periodic  *periodic = user_data;
+    cork_timestamp  now;
+
     while (CORK_LIKELY(periodic->should_continue)) {
         usleep(SLEEP_INTERVAL_MSEC * 1000);
         rii_check(bws_periodic_poll(periodic));
     }
-    return 0;
+
+    clog_debug("Process final snapshot");
+    cork_timestamp_init_now(&now);
+    return bws_periodic_fire(periodic, now);
 }
 
 int
