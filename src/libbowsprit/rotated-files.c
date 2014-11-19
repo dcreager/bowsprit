@@ -130,6 +130,7 @@ bws_rotated_files_new(struct bws_ctx *ctx, const char *output_path)
     cork_buffer_init(&rotated->buf);
     cork_timestamp_init_sec
         (&rotated->file_duration, DEFAULT_FILE_DURATION_MIN * 60);
+    rotated->file_expiration = 0;
     rotated->output_path = cork_path_new(output_path);
     cork_path_set_absolute(rotated->output_path);
     rotated->out = NULL;
