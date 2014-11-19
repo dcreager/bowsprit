@@ -11,8 +11,8 @@ bws_periodic -- Snapshotting values periodically
 | **struct bws_periodic**;
 |
 | typedef int
-| (\***bws_periodic_run_f**)(void \*user_data, struct bws_snapshot \*snapshot,
-|                       cork_timestamp now);
+| (\***bws_periodic_run_f**)(void \**user_data*, struct bws_snapshot \**curr*,
+|                       struct bws_snapshot \**prev*, cork_timestamp *now*);
 |
 | struct bws_periodic \*
 | **bws_periodic_new**(struct bws_ctx \**ctx*,
@@ -21,6 +21,9 @@ bws_periodic -- Snapshotting values periodically
 |
 | void
 | **bws_periodic_free**(struct bws_periodic \**periodic*);
+|
+| unsigned int
+| **bws_periodic_interval**(struct bws_periodic \**periodic*);
 |
 | void
 | **bws_periodic_set_interval**(struct bws_periodic \**periodic*,
@@ -53,12 +56,13 @@ with an existing event loop.
 
 **bws_periodic_new**() creates a new periodic manager that will snapshot the
 measurements in a particular context.  Your *run* callback will be executed
-every time the interval expires.  We'll pass the current snapshot and timestamp
-to your callback function, along with an opaque *user_data* pointer, which you
-can use to provide additional state.  If you provide a non-``NULL``
-*free_user_data* pointer, then we'll take control of your *user_data* instance,
-and will use the *free_user_data* function to free it when the periodic manager
-is freed.
+every time the interval expires.  We'll pass the current timestamp, and the
+current and previous snapshots, to your callback function.  For the first
+invocation, the previous snapshot will be ``NULL``.  We also pass along an
+opaque *user_data* pointer, which you can use to provide additional state.  If
+you provide a non-``NULL`` *free_user_data* pointer, then we'll take control of
+your *user_data* instance, and will use the *free_user_data* function to free it
+when the periodic manager is freed.
 
 **bws_periodic_free**() frees a periodic manager.  You must not call this if the
 manager's background thread is still running.  If you called
@@ -71,6 +75,8 @@ interval (if you don't call this function, or if you provide an *interval* of
 ``0``) is 30 seconds.  You must not call this function if you've already called
 **bws_periodic_run_in_background**(), **bws_periodic_poll**(), or
 **bws_periodoc_mocked_poll**().
+
+**bws_periodic_interval**() returns the polling interval for a manager.
 
 **bws_periodic_run_in_background**() start a new background thread that will
 repeatedly check the current time, calling your *run* method each time the

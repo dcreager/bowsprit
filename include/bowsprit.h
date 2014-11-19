@@ -218,6 +218,11 @@ bws_snapshot_filter_by_type_name(struct bws_snapshot *src,
 void
 bws_snapshot_sort(struct bws_snapshot *snapshot);
 
+
+/*-----------------------------------------------------------------------
+ * Rendering
+ */
+
 size_t
 bws_snapshot_max_width(struct bws_snapshot *snapshot);
 
@@ -226,11 +231,29 @@ bws_value_snapshot_render_to_buffer(struct bws_value_snapshot *value,
                                     struct cork_buffer *dest, int max_width);
 
 void
+bws_value_snapshot_render_delta_to_buffer(struct bws_value_snapshot *curr,
+                                          struct bws_value_snapshot *prev,
+                                          struct cork_buffer *dest,
+                                          unsigned int interval_sec,
+                                          int max_width);
+
+void
 bws_snapshot_render_to_buffer(struct bws_snapshot *snapshot,
                               struct cork_buffer *dest);
 
 void
+bws_snapshot_render_delta_to_buffer(struct bws_snapshot *curr,
+                                    struct bws_snapshot *prev,
+                                    struct cork_buffer *dest,
+                                    unsigned int interval_sec);
+
+void
 bws_snapshot_render_to_stream(struct bws_snapshot *snapshot, FILE *dest);
+
+void
+bws_snapshot_render_delta_to_stream(struct bws_snapshot *curr,
+                                    struct bws_snapshot *prev,
+                                    FILE *dest, unsigned int rate_interval_sec);
 
 
 /*-----------------------------------------------------------------------
@@ -240,8 +263,8 @@ bws_snapshot_render_to_stream(struct bws_snapshot *snapshot, FILE *dest);
 struct bws_periodic;
 
 typedef int
-(*bws_periodic_run_f)(void *user_data, struct bws_snapshot *snapshot,
-                      cork_timestamp now);
+(*bws_periodic_run_f)(void *user_data, struct bws_snapshot *curr,
+                      struct bws_snapshot *prev, cork_timestamp now);
 
 struct bws_periodic *
 bws_periodic_new(struct bws_ctx *ctx,
@@ -250,6 +273,9 @@ bws_periodic_new(struct bws_ctx *ctx,
 
 void
 bws_periodic_free(struct bws_periodic *periodic);
+
+unsigned int /* seconds */
+bws_periodic_interval(struct bws_periodic *periodic);
 
 /* 0 means to use the default, which is currently 30 seconds */
 void
