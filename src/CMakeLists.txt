@@ -49,8 +49,8 @@ set(LIBBOWSPRIT_SRC
 add_library(libbowsprit SHARED ${LIBBOWSPRIT_SRC})
 set_target_properties(libbowsprit PROPERTIES
     OUTPUT_NAME bowsprit
-    VERSION 1.0.1
-    SOVERSION 0)
+    VERSION 2.0.0
+    SOVERSION 2)
 target_link_libraries(libbowsprit
     ${CORK_LIBRARIES}
     ${CLOG_LIBRARIES}
