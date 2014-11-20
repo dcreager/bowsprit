@@ -1,4 +1,4 @@
-.TH "bws_periodic" "3" "2014-11-18" "Bowsprit" "Bowsprit\ documentation"
+.TH "bws_periodic" "3" "2014-11-19" "Bowsprit" "Bowsprit\ documentation"
 .SH NAME
 .PP
 bws_periodic \[en] Snapshotting values periodically
@@ -12,12 +12,13 @@ typedef int
 .PD 0
 .P
 .PD
-(*\f[B]bws_periodic_run_f\f[])(void *user_data, struct bws_snapshot
-*snapshot,
+(*\f[B]bws_periodic_run_f\f[])(void *\f[I]user_data\f[], struct
+bws_snapshot *\f[I]curr\f[],
 .PD 0
 .P
 .PD
-\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cork_timestamp now);
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ struct bws_snapshot
+*\f[I]prev\f[], cork_timestamp \f[I]now\f[]);
 .PP
 struct bws_periodic *
 .PD 0
@@ -39,6 +40,12 @@ void
 .P
 .PD
 \f[B]bws_periodic_free\f[](struct bws_periodic *\f[I]periodic\f[]);
+.PP
+unsigned int
+.PD 0
+.P
+.PD
+\f[B]bws_periodic_interval\f[](struct bws_periodic *\f[I]periodic\f[]);
 .PP
 void
 .PD 0
@@ -99,9 +106,11 @@ existing event loop.
 snapshot the measurements in a particular context.
 Your \f[I]run\f[] callback will be executed every time the interval
 expires.
-We'll pass the current snapshot and timestamp to your callback function,
-along with an opaque \f[I]user_data\f[] pointer, which you can use to
-provide additional state.
+We'll pass the current timestamp, and the current and previous
+snapshots, to your callback function.
+For the first invocation, the previous snapshot will be \f[C]NULL\f[].
+We also pass along an opaque \f[I]user_data\f[] pointer, which you can
+use to provide additional state.
 If you provide a non\-\f[C]NULL\f[] \f[I]free_user_data\f[] pointer,
 then we'll take control of your \f[I]user_data\f[] instance, and will
 use the \f[I]free_user_data\f[] function to free it when the periodic
@@ -122,6 +131,9 @@ an \f[I]interval\f[] of \f[C]0\f[]) is 30 seconds.
 You must not call this function if you've already called
 \f[B]bws_periodic_run_in_background\f[](), \f[B]bws_periodic_poll\f[](),
 or \f[B]bws_periodoc_mocked_poll\f[]().
+.PP
+\f[B]bws_periodic_interval\f[]() returns the polling interval for a
+manager.
 .PP
 \f[B]bws_periodic_run_in_background\f[]() start a new background thread
 that will repeatedly check the current time, calling your \f[I]run\f[]

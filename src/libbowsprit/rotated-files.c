@@ -87,10 +87,11 @@ error:
 }
 
 static int
-bws_rotated_files__run(void *user_data, struct bws_snapshot *snapshot,
-                       cork_timestamp now)
+bws_rotated_files__run(void *user_data, struct bws_snapshot *curr,
+                       struct bws_snapshot *prev, cork_timestamp now)
 {
     struct bws_rotated_files  *rotated = user_data;
+    unsigned int  interval_sec = bws_periodic_interval(rotated->periodic);
 
     if (rotated->file_expiration == 0) {
         rii_check(bws_rotated_files_open_file(rotated, now));
@@ -106,7 +107,10 @@ bws_rotated_files__run(void *user_data, struct bws_snapshot *snapshot,
     fwrite(rotated->buf.buf, 1, rotated->buf.size, rotated->out);
     putc('\n', rotated->out);
 
-    bws_snapshot_render_to_stream(snapshot, rotated->out);
+    cork_buffer_clear(&rotated->buf);
+    bws_snapshot_render_delta_to_buffer
+        (curr, prev, &rotated->buf, interval_sec);
+    fwrite(rotated->buf.buf, 1, rotated->buf.size, rotated->out);
     rii_check_posix(fflush(rotated->out));
     return 0;
 }
@@ -130,6 +134,7 @@ bws_rotated_files_new(struct bws_ctx *ctx, const char *output_path)
     cork_buffer_init(&rotated->buf);
     cork_timestamp_init_sec
         (&rotated->file_duration, DEFAULT_FILE_DURATION_MIN * 60);
+    rotated->file_expiration = 0;
     rotated->output_path = cork_path_new(output_path);
     cork_path_set_absolute(rotated->output_path);
     rotated->out = NULL;
