@@ -11,3 +11,5 @@ bowsprit.pc
 *.os
 *.so
 *.dylib
+
+!.travis.yml
