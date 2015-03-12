@@ -68,8 +68,10 @@ files; that is your responsibility.)
 .PP
 All of the files written will have names of the following form:
 .PP
-stats\-\f[I]slug\f[]\-\f[I]YYYYMMDD\f[]\-\f[I]HHMMSS\f[].log
+stats\-\f[I]slug\f[]\-\f[I]YYYYMMDD\f[]\-\f[I]HHMMSS\f[]\-\f[I]QQQQ\f[].log
 .PP
+The \f[I]QQQQ\f[] portion is a sequential increasing counter, which
+starts at 0.
 The \f[I]slug\f[] portion is optional; if you don't call
 \f[B]bws_rotated_files_set_filename_slug\f[](), then the filenames will
 not include any slug.

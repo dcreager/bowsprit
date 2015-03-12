@@ -38,6 +38,7 @@ struct bws_rotated_files {
     cork_timestamp  file_expiration;
     FILE  *out;
     const char  *filename_slug;
+    size_t  sequence;
 };
 
 static int
@@ -51,7 +52,9 @@ bws_rotated_files_open_file(struct bws_rotated_files *rotated,
         cork_buffer_append_string(&rotated->buf, rotated->filename_slug);
     }
     cork_timestamp_format_utc
-        (now, "-%Y%m%d-%H%M%S.log.tmp", &rotated->buf);
+        (now, "-%Y%m%d-%H%M%S", &rotated->buf);
+    cork_buffer_append_printf
+        (&rotated->buf, "-%04zu.log.tmp", rotated->sequence);
     rotated->temp_filename =
         cork_path_join(rotated->output_path, rotated->buf.buf);
 
@@ -62,7 +65,9 @@ bws_rotated_files_open_file(struct bws_rotated_files *rotated,
         cork_buffer_append_string(&rotated->buf, rotated->filename_slug);
     }
     cork_timestamp_format_utc
-        (now, "-%Y%m%d-%H%M%S.log", &rotated->buf);
+        (now, "-%Y%m%d-%H%M%S", &rotated->buf);
+    cork_buffer_append_printf
+        (&rotated->buf, "-%04zu.log", rotated->sequence);
     rotated->real_filename =
         cork_path_join(rotated->output_path, rotated->buf.buf);
 
@@ -71,6 +76,7 @@ bws_rotated_files_open_file(struct bws_rotated_files *rotated,
     ep_check_posix(rotated->out =
                    fopen(cork_path_get(rotated->temp_filename), "w"));
     rotated->file_expiration = now + rotated->file_duration;
+    rotated->sequence++;
     return 0;
 
 error:
@@ -153,6 +159,7 @@ bws_rotated_files_new(struct bws_ctx *ctx, const char *output_path)
     cork_path_set_absolute(rotated->output_path);
     rotated->out = NULL;
     rotated->filename_slug = NULL;
+    rotated->sequence = 0;
     rotated->periodic = bws_periodic_new
         (ctx, rotated, bws_rotated_files__free, bws_rotated_files__run);
     return rotated;
