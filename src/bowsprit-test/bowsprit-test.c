@@ -42,7 +42,9 @@ main(int argc, const char **argv)
     struct bws_derive  *cat;
     struct bws_gauge  *dog;
     struct bws_rotated_files  *rotated;
+    struct bws_rotated_files  *slugged_rotated;
     struct bws_periodic  *periodic;
+    struct bws_periodic  *slugged_periodic;
     struct bws_periodic  *logger;
     cork_timestamp  seconds;
     cork_timestamp  now;
@@ -61,16 +63,23 @@ main(int argc, const char **argv)
     cat = bws_derive_new(plugin, "cat", NULL);
     dog = bws_gauge_new(plugin, "dog", NULL);
 
-    /* Create the file rotator. */
+    /* Create a file rotator. */
     rotated = bws_rotated_files_new(ctx, ".");
     periodic = bws_rotated_files_periodic(rotated);
     bws_rotated_files_set_file_duration(rotated, 1);
+
+    /* Create a file rotator with a slug. */
+    slugged_rotated = bws_rotated_files_new(ctx, ".");
+    slugged_periodic = bws_rotated_files_periodic(slugged_rotated);
+    bws_rotated_files_set_file_duration(slugged_rotated, 1);
+    bws_rotated_files_set_filename_slug(slugged_rotated, "slugged");
 
     /* Create the logger. */
     logger = bws_logger_new(ctx, "bowsprit-test", CLOG_LEVEL_INFO);
 
     /* Prime the pump with an initial timestamp. */
     ri_check_exit(bws_periodic_mocked_poll(periodic, now));
+    ri_check_exit(bws_periodic_mocked_poll(slugged_periodic, now));
     ri_check_exit(bws_periodic_mocked_poll(logger, now));
 
     /* Start incrementing some stats and writing to files. */
@@ -81,12 +90,14 @@ main(int argc, const char **argv)
     /* Default interval is 30 seconds, so we shouldn't have any output yet. */
     now += 5 * seconds;
     ri_check_exit(bws_periodic_mocked_poll(periodic, now));
+    ri_check_exit(bws_periodic_mocked_poll(slugged_periodic, now));
     ri_check_exit(bws_periodic_mocked_poll(logger, now));
 
     /* After 30 seconds we get our first output. */
     bws_derive_inc(cat);
     now += 25 * seconds;
     ri_check_exit(bws_periodic_mocked_poll(periodic, now));
+    ri_check_exit(bws_periodic_mocked_poll(slugged_periodic, now));
     ri_check_exit(bws_periodic_mocked_poll(logger, now));
     /* Expected output: [file 1] 1, 2, 1 */
 
@@ -95,6 +106,7 @@ main(int argc, const char **argv)
     bws_derive_inc(cat);
     now += 15 * seconds;
     ri_check_exit(bws_periodic_mocked_poll(periodic, now));
+    ri_check_exit(bws_periodic_mocked_poll(slugged_periodic, now));
     ri_check_exit(bws_periodic_mocked_poll(logger, now));
 
     /* After 60 seconds we get another output, and roll over to a new file. */
@@ -102,6 +114,7 @@ main(int argc, const char **argv)
     bws_gauge_inc(dog);
     now += 15 * seconds;
     ri_check_exit(bws_periodic_mocked_poll(periodic, now));
+    ri_check_exit(bws_periodic_mocked_poll(slugged_periodic, now));
     ri_check_exit(bws_periodic_mocked_poll(logger, now));
     /* Expected output: [file 2] 2, 4, 2 */
 
@@ -110,6 +123,7 @@ main(int argc, const char **argv)
     bws_gauge_inc(dog);
     now += 15 * seconds;
     ri_check_exit(bws_periodic_mocked_poll(periodic, now));
+    ri_check_exit(bws_periodic_mocked_poll(slugged_periodic, now));
     ri_check_exit(bws_periodic_mocked_poll(logger, now));
 
     /* After 90 seconds we get another output, in the same file. */
@@ -117,10 +131,12 @@ main(int argc, const char **argv)
     bws_gauge_inc(dog);
     now += 15 * seconds;
     ri_check_exit(bws_periodic_mocked_poll(periodic, now));
+    ri_check_exit(bws_periodic_mocked_poll(slugged_periodic, now));
     ri_check_exit(bws_periodic_mocked_poll(logger, now));
     /* Expected output: [file 2] 3, 5, 4 */
 
     bws_rotated_files_free(rotated);
+    bws_rotated_files_free(slugged_rotated);
     bws_periodic_free(logger);
     bws_ctx_free(ctx);
     return 0;
