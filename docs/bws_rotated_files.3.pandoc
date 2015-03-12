@@ -40,9 +40,10 @@ responsibility.)
 
 All of the files written will have names of the following form:
 
-| stats-*slug*-*YYYYMMDD*-*HHMMSS*.log
+| stats-*slug*-*YYYYMMDD*-*HHMMSS*-*QQQQ*.log
 
-The *slug* portion is optional; if you don't call
+The *QQQQ* portion is a sequential increasing counter, which starts at 0.  The
+*slug* portion is optional; if you don't call
 **bws_rotated_files_set_filename_slug**(), then the filenames will not include
 any slug.
 
