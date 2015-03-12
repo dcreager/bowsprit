@@ -44,6 +44,18 @@ void
 .PD
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ unsigned
 int \f[I]minutes\f[]);
+.PP
+void
+.PD 0
+.P
+.PD
+\f[B]bws_rotated_files_set_filename_slug\f[](struct bws_rotated_files
+*\f[I]rotated\f[],
+.PD 0
+.P
+.PD
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ const
+char *\f[I]slug\f[]);
 .SH DESCRIPTION
 .PP
 A \f[B]bws_rotated_files\f[] instance is a specialized
@@ -56,7 +68,11 @@ files; that is your responsibility.)
 .PP
 All of the files written will have names of the following form:
 .PP
-stats\-\f[I]YYYYMMDD\f[]\-\f[I]HHMMSS\f[].log
+stats\-\f[I]slug\f[]\-\f[I]YYYYMMDD\f[]\-\f[I]HHMMSS\f[].log
+.PP
+The \f[I]slug\f[] portion is optional; if you don't call
+\f[B]bws_rotated_files_set_filename_slug\f[](), then the filenames will
+not include any slug.
 .PP
 The \[lq]current\[rq] file will be written to a temporary file in the
 same output directory; when the file is closed (either because of a
@@ -86,6 +102,11 @@ if necessary.
 long each file should be \[lq]current\[rq] before we rotate over into a
 new file.
 The default duration is 10 minutes.
+.PP
+\f[B]bws_rotated_files_set_filename_slug\f[]() lets you provide a
+\f[I]slug\f[] that will be included in each output filename.
+This lets you write statistics from several processes into the same
+directory, while easily being able to tell them apart.
 .SH RETURN VALUES
 .PP
 \f[B]bws_rotated_files_new\f[]() always returns a valid new file

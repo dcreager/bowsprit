@@ -37,6 +37,7 @@ struct bws_rotated_files {
     cork_timestamp  file_duration;
     cork_timestamp  file_expiration;
     FILE  *out;
+    const char  *filename_slug;
 };
 
 static int
@@ -44,14 +45,24 @@ bws_rotated_files_open_file(struct bws_rotated_files *rotated,
                             cork_timestamp now)
 {
     cork_buffer_clear(&rotated->buf);
+    cork_buffer_append_literal(&rotated->buf, ".stats");
+    if (rotated->filename_slug != NULL) {
+        cork_buffer_append_literal(&rotated->buf, "-");
+        cork_buffer_append_string(&rotated->buf, rotated->filename_slug);
+    }
     cork_timestamp_format_utc
-        (now, ".stats-%Y%m%d-%H%M%S.log.tmp", &rotated->buf);
+        (now, "-%Y%m%d-%H%M%S.log.tmp", &rotated->buf);
     rotated->temp_filename =
         cork_path_join(rotated->output_path, rotated->buf.buf);
 
     cork_buffer_clear(&rotated->buf);
+    cork_buffer_append_literal(&rotated->buf, "stats");
+    if (rotated->filename_slug != NULL) {
+        cork_buffer_append_literal(&rotated->buf, "-");
+        cork_buffer_append_string(&rotated->buf, rotated->filename_slug);
+    }
     cork_timestamp_format_utc
-        (now, "stats-%Y%m%d-%H%M%S.log", &rotated->buf);
+        (now, "-%Y%m%d-%H%M%S.log", &rotated->buf);
     rotated->real_filename =
         cork_path_join(rotated->output_path, rotated->buf.buf);
 
@@ -122,6 +133,9 @@ bws_rotated_files__free(void *user_data)
     if (rotated->out != NULL) {
         bws_rotated_files_close_file(rotated);
     }
+    if (rotated->filename_slug != NULL) {
+        cork_strfree(rotated->filename_slug);
+    }
     cork_path_free(rotated->output_path);
     cork_buffer_done(&rotated->buf);
     cork_delete(struct bws_rotated_files, rotated);
@@ -138,6 +152,7 @@ bws_rotated_files_new(struct bws_ctx *ctx, const char *output_path)
     rotated->output_path = cork_path_new(output_path);
     cork_path_set_absolute(rotated->output_path);
     rotated->out = NULL;
+    rotated->filename_slug = NULL;
     rotated->periodic = bws_periodic_new
         (ctx, rotated, bws_rotated_files__free, bws_rotated_files__run);
     return rotated;
@@ -160,4 +175,14 @@ bws_rotated_files_set_file_duration(struct bws_rotated_files *rotated,
                                     unsigned int minutes)
 {
     cork_timestamp_init_sec(&rotated->file_duration, minutes * 60);
+}
+
+void
+bws_rotated_files_set_filename_slug(struct bws_rotated_files *rotated,
+                                    const char *slug)
+{
+    if (rotated->filename_slug != NULL) {
+        cork_strfree(rotated->filename_slug);
+    }
+    rotated->filename_slug = cork_strdup(slug);
 }

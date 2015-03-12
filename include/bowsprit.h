@@ -323,5 +323,9 @@ void
 bws_rotated_files_set_file_duration(struct bws_rotated_files *rotated,
                                     unsigned int minutes);
 
+void
+bws_rotated_files_set_filename_slug(struct bws_rotated_files *rotated,
+                                    const char *slug);
+
 
 #endif /* BOWSPRIT_H */
