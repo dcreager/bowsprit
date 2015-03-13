@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------
-# Copyright © 2011-2014, RedJack, LLC.
+# Copyright © 2011-2015, RedJack, LLC.
 # All rights reserved.
 #
 # Please see the COPYING file in this distribution for license details.
@@ -49,7 +49,7 @@ set(LIBBOWSPRIT_SRC
 add_library(libbowsprit SHARED ${LIBBOWSPRIT_SRC})
 set_target_properties(libbowsprit PROPERTIES
     OUTPUT_NAME bowsprit
-    VERSION 2.0.0
+    VERSION 3.0.1
     SOVERSION 2)
 target_link_libraries(libbowsprit
     ${CORK_LIBRARIES}
