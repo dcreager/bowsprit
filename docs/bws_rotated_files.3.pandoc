@@ -23,6 +23,10 @@ bws_rotated_files -- Writing statistics into rotated files
 | void
 | **bws_rotated_files_set_file_duration**(struct bws_rotated_files \**rotated*,
 |                                     unsigned int *minutes*);
+|
+| void
+| **bws_rotated_files_set_filename_slug**(struct bws_rotated_files \**rotated*,
+|                                     const char \**slug*);
 
 
 # DESCRIPTION
@@ -36,7 +40,12 @@ responsibility.)
 
 All of the files written will have names of the following form:
 
-| stats-*YYYYMMDD*-*HHMMSS*.log
+| stats-*slug*-*YYYYMMDD*-*HHMMSS*-*QQQQ*.log
+
+The *QQQQ* portion is a sequential increasing counter, which starts at 0.  The
+*slug* portion is optional; if you don't call
+**bws_rotated_files_set_filename_slug**(), then the filenames will not include
+any slug.
 
 The "current" file will be written to a temporary file in the same output
 directory; when the file is closed (either because of a rotation or because the
@@ -61,6 +70,10 @@ into a new file if necessary.
 **bws_rotated_files_set_file_duration**() lets you configure how long each file
 should be "current" before we rotate over into a new file.  The default duration
 is 10 minutes.
+
+**bws_rotated_files_set_filename_slug**() lets you provide a *slug* that will be
+included in each output filename.  This lets you write statistics from several
+processes into the same directory, while easily being able to tell them apart.
 
 
 # RETURN VALUES
