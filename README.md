@@ -1,5 +1,7 @@
 # Bowsprit
 
+[![Build Status](https://img.shields.io/travis/redjack/bowsprit/develop.svg)](https://travis-ci.org/redjack/bowsprit)
+
 Bowsprit is a library for generating [collectd](https://collectd.org/)-style
 statistics from a C application.  Normally, you'll have a collectd instance
 running somewhere that you can send the statistics too (either on the same
