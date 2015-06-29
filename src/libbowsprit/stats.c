@@ -278,7 +278,7 @@ bws_ctx_free(struct bws_ctx *pctx)
         bws_plugin_priv_free(curr);
     }
     cork_strfree(ctx->public.hostname);
-    cork_delete(struct bws_ctx, ctx);
+    cork_delete(struct bws_ctx_priv, ctx);
 }
 
 struct bws_plugin *
