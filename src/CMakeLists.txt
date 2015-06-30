@@ -6,22 +6,11 @@
 # Please see the COPYING file in this distribution for license details.
 # ----------------------------------------------------------------------
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
-
 #-----------------------------------------------------------------------
-# Build the library
+# libbowsprit
 
-set(LIBBOWSPRIT_SRC
-    libbowsprit/logger.c
-    libbowsprit/periodic.c
-    libbowsprit/render.c
-    libbowsprit/rotated-files.c
-    libbowsprit/snapshot.c
-    libbowsprit/stats.c
-)
-
-# Update the VERSION and SOVERSION properties below according to the following
-# rules (taken from [1]):
+# Update the VERSION property below according to the following rules (taken from
+# [1]):
 #
 # VERSION = current.revision.age
 #
@@ -38,40 +27,36 @@ set(LIBBOWSPRIT_SRC
 #   6. If any interfaces have been removed or changed since the last public
 #      release, then set `age` to 0.
 #
-# SOVERSION should always equal `current-age`.
-#
 # Note that changing `current` means that you are releasing a new
 # backwards-incompatible version of the library.  This has implications on
-# packaging, so once an API has stabilized, these should be a rare occurrence.
+# packaging, so once an API has stabilized, this should be a rare occurrence.
 #
 # [1] http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html#Updating-version-info
 
-add_library(libbowsprit SHARED ${LIBBOWSPRIT_SRC})
-set_target_properties(libbowsprit PROPERTIES
+add_c_library(
+    libbowsprit
     OUTPUT_NAME bowsprit
+    PKGCONFIG_NAME bowsprit
     VERSION 3.0.1
-    SOVERSION 2)
-target_link_libraries(libbowsprit
-    ${CORK_LIBRARIES}
-    ${CLOG_LIBRARIES}
+    SOURCES
+        libbowsprit/logger.c
+        libbowsprit/periodic.c
+        libbowsprit/render.c
+        libbowsprit/rotated-files.c
+        libbowsprit/snapshot.c
+        libbowsprit/stats.c
+    LIBRARIES
+        libcork
+        clogger
 )
-
-install(TARGETS libbowsprit DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 #-----------------------------------------------------------------------
 # bowsprit-test
 
-set(BOWSPRIT_TEST_SRC
-    bowsprit-test/bowsprit-test.c
+add_c_executable(
+    bowsprit-test
+    SKIP_INSTALL
+    OUTPUT_NAME bowsprit-test
+    SOURCES bowsprit-test/bowsprit-test.c
+    LOCAL_LIBRARIES libbowsprit
 )
-
-add_executable(bowsprit-test ${BOWSPRIT_TEST_SRC})
-target_link_libraries(bowsprit-test libbowsprit)
-
-#-----------------------------------------------------------------------
-# Generate the pkg-config file
-
-set(prefix ${CMAKE_INSTALL_PREFIX})
-configure_file(bowsprit.pc.in ${CMAKE_CURRENT_BINARY_DIR}/bowsprit.pc @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/bowsprit.pc
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)

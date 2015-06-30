@@ -1,7 +1,6 @@
 /build/
 /.build/
 
-RELEASE-VERSION
 bowsprit.pc
 
 /bowsprit*.tar.gz
