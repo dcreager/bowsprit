@@ -1,7 +1,6 @@
 /build/
 /.build/
 
-RELEASE-VERSION
 bowsprit.pc
 
 /bowsprit*.tar.gz
@@ -11,3 +10,5 @@ bowsprit.pc
 *.os
 *.so
 *.dylib
+
+!.travis.yml
