@@ -72,7 +72,7 @@ install_links(8)   # system commands
 set(ALL_MANS)
 
 macro(pandocify name)
-    set(src  "${CMAKE_CURRENT_SOURCE_DIR}/${name}.pandoc")
+    set(src "${CMAKE_CURRENT_SOURCE_DIR}/${name}.md")
     set(dest "${CMAKE_CURRENT_SOURCE_DIR}/${name}")
     get_filename_component(section "${name}" EXT)
     string(REPLACE "." "" section "${section}")
